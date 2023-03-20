@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -25,19 +24,6 @@ jobs:
       - name: Run tests and collect coverage
         run: pytest --cov-report=xml
 
-      flag_management:
-        individual_flags:
-          - name: backend
-            paths:
-              - ./core
-              - ./weather
-          - name: frontend
-            paths:
-              - ./static
-              - ./staticfiles
-
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
-        with:
-          flags: backend
-          flags: frontend
+        
