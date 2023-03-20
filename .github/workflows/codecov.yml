@@ -1,7 +1,6 @@
 name: CodeCov
 
-on:
-  pull_request:
+on: [push, pull_request]
 
 jobs:
 
@@ -10,7 +9,7 @@ jobs:
 
       permissions:
         contents: write
-        
+
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -21,10 +20,21 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip 
+          pip install -r api/requirements.txt
+      
+      - name: Run tests and collect coverage
+        run: pytest --cov-report=xml
 
-      - name: Build package
-        run: |
-          python -m build 
+      flag_management:
+        individual_flags:
+          - name: backend
+            paths:
+              - ./core
+              - ./weather
+          - name: frontend
+            paths:
+              - ./static
+              - ./staticfiles
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
