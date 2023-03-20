@@ -8,5 +8,4 @@ urlpatterns = [
     path('api/city/weather/', list_create_city_view, name="city-weather"),
     path('api/city/weather/coordinates/', add_coordinates, name="city-weather-coordinates"),
 
-
 ]
