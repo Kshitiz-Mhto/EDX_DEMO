@@ -189,8 +189,7 @@
    */
   var hyphenateRE = /\B([A-Z])/g;
   var hyphenate = cached(function (str) {
-    return str.replace(hyphenateRE, '-$1').toLowerCase()
-  });
+    return str.replace(hyphenateRE, '-$1').toLowerCase()});
 
   /**
    * Simple bind polyfill for environments that do not support it,
@@ -202,14 +201,13 @@
 
   /* istanbul ignore next */
   function polyfillBind (fn, ctx) {
-    function boundFn (a) {
+    function boundFn (a){
       var l = arguments.length;
       return l
         ? l > 1
           ? fn.apply(ctx, arguments)
           : fn.call(ctx, a)
-        : fn.call(ctx)
-    }
+        : fn.call(ctx)}
 
     boundFn._length = fn.length;
     return boundFn
