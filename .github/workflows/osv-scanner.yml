@@ -6,11 +6,11 @@ on: [push,pull_request]
 jobs:
   run-osv:
     runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-        - name: Scan for vulnerabilities
-          run: |
-            wget https://github.com/google/osv-scanner/releases/download/v1.2.0/osv-scanner_1.2.0_linux_amd64
-            chmod +x ./osv-scanner_1.2.0_linux_amd64
-            ./osv-scanner_1.2.0_linux_amd64 --format markdown -r .
-          continue-on-error: true
+    steps:
+      - uses: actions/checkout@v3
+      - name: Scan for vulnerabilities
+        run: |
+          wget https://github.com/google/osv-scanner/releases/download/v1.2.0/osv-scanner_1.2.0_linux_amd64
+          chmod +x ./osv-scanner_1.2.0_linux_amd64
+          ./osv-scanner_1.2.0_linux_amd64 --format markdown -r .
+        continue-on-error: true
