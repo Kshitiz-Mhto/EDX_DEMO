@@ -1,0 +1,232 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="" id="App">
+  <div class="container mb-5">
+    <form @submit.prevent="addCity">
+      <div class="">
+        <div
+          v-if="city_not_exist"
+          class="alert alert-danger alert-dismissible fade show mt-4"
+          role="alert"
+          style="width:50%; margin:0 auto; text-align:center;"
+        >
+          Oooppss! Looks like that city does not exist in the
+          world 😢.
+        </div>
+        <div class="main-search-input-wrap">
+          <div class="main-search-input fl-wrap">
+            <div class="main-search-input-item">
+              <input
+                type="text"
+                value=""
+                v-model="name"
+                placeholder="Add any city..."
+                name="name"
+              />
+            </div>
+            <button
+              v-if="!loading"
+              :disabled="name.length== 0"
+              class="main-search-button"
+            >
+              ADD
+            </button>
+            <button v-else class="main-search-button">
+              <i
+                class="fa fa-circle-o-notch fa-spin"
+                style="font-size: 24px; color: white"
+              ></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div><br><br><br><br><br></div>
+  <div class="container">
+    <div class="widget" v-for="data in weathers">
+      <div class="row">
+        <div class="col-8">
+          <div class="date">{data.created_at}</div>
+          <div class="city">{data.city_name}, {data.country}</div>
+        </div>
+        <div class="col-4">
+          <img :src="data.icon" alt="" class="weather-icon" />
+        </div>
+      </div>
+
+      <div class="temp">{data.temperature}&deg;C</div>
+      <div class="city">{data.description}</div>
+      <div class="coordinates">
+        Latitude:{data.lat} <br />Longtitude: {data.lon}
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{% static 'js/vue.js' %}"></script>
+<!-- <script src="{% static 'js/vue.min.js' %}"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script type="module">
+  //import moment from 'moment'
+  //var api_key = "13417a3f4de1d1d1f86ccf8e6fd1277f";
+  var api_key = "f882fb1658025ca36144d0e9a23a5197";
+
+  var app = new Vue({
+    el: "#App",
+    delimiters: ["{", "}"],
+    data: {
+      name: "",
+      cities: [],
+      coordinates: {
+        lat: null,
+        lon: null,
+      },
+      weather_obj: {
+        country: null,
+        city_name: null,
+        description: null,
+        temperature: null,
+        icon: null,
+        lat: null,
+        lon: null,
+      },
+      city_not_exist: false,
+      empty: false,
+      loading: false,
+      weathers: [],
+    },
+
+    mounted() {
+      this.getCity();
+      this.getWeatherAPI();
+      console.log("Component mounted");
+    },
+    beforeMount() {
+      console.log("Before mounted");
+    },
+    computed: {
+      // a computed getter
+      toCelsius() {
+        // `this` points to the vm instance
+        const fahrenheit = this.weathers.temperature;
+        const celsius = (298.1 - 32) / 1.8;
+        console.log(celsius.toFixed(2));
+        return celsius.toFixed(2);
+      },
+    },
+    methods: {
+      getWeatherAPI() {
+        axios
+          .get(`/api/city/weather/`)
+          .then((res) => {
+            this.weathers = res.data;
+            console.log("test");
+            console.log(this.weather_obj.city_name);
+            console.log("Get request from server success!!");
+            console.log(this.weathers);
+          })
+          .catch((err) => console.log(err));
+      },
+      getCity() {
+        axios
+          .get(`/api/city/`)
+          .then((res) => {
+            this.cities = res.data;
+            let city_list = this.cities;
+            console.log(city_list);
+            console.log(res.data);
+            console.log(city_list.length);
+            console.log(this.weather_city_list);
+          })
+          .catch((err) => console.log(err));
+      },
+      addCity() {
+        this.map = "";
+        console.log("Start");
+        const data = {
+          name: this.name,
+        };
+        this.loading = true;
+
+        axios({
+          method: "post",
+          url: `/api/city/`,
+          data: {
+            name: this.name,
+          },
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "content-type": "application/json",
+          },
+        })
+          .then((res) => {
+            console.log("executing add city");
+            console.log(this.name);
+            //this.name = "";
+            this.fetchServer();
+            this.getCity();
+            this.loading = false;
+            console.log("addCity works");
+          })
+          .catch((err) => console.log(err));
+      },
+      fetchServer() {
+        this.city_not_exist = false;
+        axios
+          .get(
+            `https://api.openweathermap.org/data/2.5/weather?q=${this.name}&units=imperial&APPID=${api_key}`
+          )
+          .then((res) => {
+            this.weather_obj.city_name = res.data.name;
+            this.weather_obj.temperature = res.data.main.temp;
+            this.weather_obj.description = res.data.weather[0].description;
+            this.weather_obj.icon =
+              "https://api.openweathermap.org/img/w/" +
+              res.data.weather[0].icon +
+              ".png";
+            this.weather_obj.lon = res.data.coord.lon;
+            this.weather_obj.lat = res.data.coord.lat;
+            this.weather_obj.country = res.data.sys.country;
+            this.name = "";
+            console.log("fetchServer works");
+            console.log(res.data);
+            console.log(this.weather_obj);
+            console.log(this.weather_obj.city_name);
+            console.log(this.weather_obj.temperature);
+            console.log(this.weather_obj.description);
+            console.log(this.weather_obj.icon);
+            console.log("executing post request to server.");
+            axios({
+              method: "post",
+              url: `/api/city/weather/`,
+              data: {
+                country: this.weather_obj.country,
+                city_name: this.weather_obj.city_name,
+                temperature: this.weather_obj.temperature,
+                description: this.weather_obj.description,
+                icon: this.weather_obj.icon,
+                lon: this.weather_obj.lon,
+                lat: this.weather_obj.lat,
+              },
+              headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "content-type": "application/json",
+              },
+            })
+              .then((res) => {
+                this.getWeatherAPI();
+                console.log(this.map);
+                console.log("sendServer works");
+                console.log("END");
+              })
+              .catch((err) => console.log(err));
+          })
+          .catch((err) => {
+            console.log(err);
+            this.city_not_exist = true;
+            console.log(this.city_not_exist);
+          }); // 1st get
+      },
+    },
+  });
+</script>
+{% endblock content %}

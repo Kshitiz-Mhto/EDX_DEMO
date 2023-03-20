@@ -1,0 +1,64 @@
+{% load static %} {% block content %}
+<nav class="navbar navbar-expand-lg">
+  <a class="navbar-brand" href="{% url 'index' %}" style="color: white"
+    >Weather App</a
+  >
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" target="new" href="https://github.com/markavale/Weather-App"
+          ><span><i class="fa fa-github" aria-hidden="true"></i></span
+        ></a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          target="new"
+          href="https://www.instagram.com/markavale_/"
+          ><span><i class="fa fa-instagram" aria-hidden="true"></i></span
+        ></a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          target="new"
+          href="https://www.facebook.com/markavale"
+          ><span
+            ><i class="fa fa-facebook-official" aria-hidden="true"></i></span
+        ></a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          target="new"
+          href="https://www.linkedin.com/in/mark-anthony-vale-b0b169199/"
+          ><span
+            ><i class="fa fa-linkedin" aria-hidden="true"></i></span
+        ></a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          target="new"
+          href="https://www.youtube.com/channel/UCxQaGymALC8CBJLJZ7UL34Q?view_as=subscriber"
+          ><span
+            ><i class="fa fa-youtube-play" aria-hidden="true"></i></span
+        ></a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+{% endblock content %}
