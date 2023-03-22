@@ -1,9 +1,9 @@
 name: JSON check
 
 on:
-  pull_request:
+  push:
     paths:
-      - "./**/*.json"
+      - "**.json"
 
 jobs:
   json-check:
